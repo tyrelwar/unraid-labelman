@@ -26,7 +26,7 @@ try {
     $docroot = $docroot ?? $_SERVER['DOCUMENT_ROOT'] ?: '/usr/local/emhttp';
     require_once "{$docroot}/plugins/labelman/include/page.php";
 
-    if(isset($_GET['container'])) {
+    if (isset($_GET['container'])) {
         echo Labelman\getPage("Container");
     } else {
         echo Labelman\getPage("Main");

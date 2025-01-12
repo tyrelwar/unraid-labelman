@@ -22,14 +22,14 @@ namespace Labelman;
 $docroot = $docroot ?? $_SERVER['DOCUMENT_ROOT'] ?: '/usr/local/emhttp';
 require_once "{$docroot}/plugins/labelman/include/common.php";
 
-if (!isset($_GET['container'])) {
-    throw("No container specified");
+if ( ! isset($_GET['container'])) {
+    throw new \Exception("No container specified");
 }
 
 $containerName = $_GET['container'];
-$configFile = realpath("/boot/config/plugins/dockerMan/templates-user/my-{$containerName}.xml");
+$configFile    = realpath("/boot/config/plugins/dockerMan/templates-user/my-{$containerName}.xml");
 if ( ! $configFile || ! str_starts_with($configFile, "/boot/config/plugins/dockerMan/templates-user/my-")) {
-    throw("Bad Request");
+    throw new \Exception("Bad Request");
 }
 
 $container = new Container($configFile);
@@ -37,10 +37,10 @@ $container = new Container($configFile);
 <link type="text/css" rel="stylesheet" href="<?= Utils::auto_v('/webGui/styles/jquery.switchbutton.css');?>">
 <span class="status vhshift"><input type="checkbox" class="advancedview"></span>
 
-<h2><?= $containerName ?></h2>
+<h2><?= $containerName; ?></h2>
 
 <form action="/plugins/labelman/update.php" method="POST" target="progressFrame">
-<input type="hidden" name="containerName" value="<?= urlencode($containerName) ?>">
+<input type="hidden" name="containerName" value="<?= urlencode($containerName); ?>">
 
 <?php $container->TSDProxy->display($container); ?>
 

@@ -34,7 +34,7 @@ Please select the container you would like to manage:
 
 <?php
 
-foreach($dockerOut ?? array() as $c) {
+foreach ($dockerOut as $c) {
     $containerURL = urlencode($c);
     echo("<li><a href='/Settings/Labelman?container={$containerURL}'>{$c}</a></li>");
 }

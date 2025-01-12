@@ -73,15 +73,16 @@ class Utils
     public static function apply_label(\SimpleXMLElement &$config, string $label, string $value, string $default = ""): void
     {
         $remove = $value == $default;
-        $found = false;
+        $found  = false;
 
-        foreach($config->Config as $c) {
+        foreach ($config->Config as $c) {
             $attributes = $c->attributes();
-            if($attributes['Type'] == "Label") {
-                if($attributes['Target'] == $label) {
-                    if($remove) {
+            if ($attributes['Type'] == "Label") {
+                if ($attributes['Target'] == $label) {
+                    if ($remove) {
                         unset($c[0]);
                     } else {
+                        /** @phpstan-ignore offsetAssign.valueType */
                         $c[0] = $value;
                     }
 
@@ -91,7 +92,7 @@ class Utils
             }
         }
 
-        if(!$found && !$remove) {
+        if ( ! $found && ! $remove) {
             $new = $config->addChild("Config");
             $new->addAttribute("Name", $label);
             $new->addAttribute("Target", $label);
@@ -105,5 +106,4 @@ class Utils
             $new[0] = $value;
         }
     }
-
 }
