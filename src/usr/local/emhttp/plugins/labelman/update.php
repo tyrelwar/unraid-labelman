@@ -43,6 +43,11 @@ $dom->preserveWhiteSpace = false;
 $dom->formatOutput = true;
 $dom->loadXML($container->config->asXML());
 
+// Create config backup
+$time = time();
+copy($configFile, "/boot/config/plugins/labelman/{$containerName}.{$time}.xml");
+
+// Write config file
 file_put_contents($configFile, $dom->saveXML());
 
 Utils::run_command("/usr/local/emhttp/plugins/dynamix.docker.manager/scripts/rebuild_container '{$containerName}'");
