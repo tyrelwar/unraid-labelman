@@ -1,0 +1,63 @@
+<?xml version='1.0' standalone='yes'?>
+<!DOCTYPE PLUGIN>
+
+<PLUGIN 
+  name="labelman"
+  author="Derek Kaser"
+  version="{{ version }}"
+  pluginURL="https://raw.githubusercontent.com/dkaser/unraid-labelman/main/plugin/labelman.plg"
+  support=""
+  min="6.12.0"
+  icon="fa-tags"
+>
+
+<CHANGES>
+<![CDATA[
+###{{ version }}###
+{{ changelog }}
+
+For older releases, see https://github.com/dkaser/unraid-labelman/releases
+]]>
+</CHANGES>
+
+<FILE Name="/boot/config/plugins/labelman/unraid-labelman-{{ version }}-noarch-1.txz">
+<URL>https://github.com/dkaser/unraid-labelman/releases/download/{{ version }}/unraid-labelman-{{ version }}-noarch-1.txz</URL>
+<SHA256>{{ checksum }}</SHA256>
+</FILE>
+
+<!--
+The 'install' script.
+-->
+<FILE Run="/bin/bash">
+<INLINE>
+<![CDATA[
+upgradepkg --install-new /boot/config/plugins/labelman/unraid-labelman-{{ version }}-noarch-1.txz
+
+# cleanup old versions
+rm -f $(ls /boot/config/plugins/labelman/unraid-labelman-*.txz 2>/dev/null | grep -v '{{ version }}')
+
+echo ""
+echo "----------------------------------------------------"
+echo " labelman has been installed."
+echo " Version: {{ version }}"
+echo "----------------------------------------------------"
+echo ""
+]]>
+</INLINE>
+</FILE>
+
+<!--
+The 'remove' script.ßßßß
+-->
+<FILE Run="/bin/bash" Method="remove">
+<INLINE>
+<![CDATA[
+removepkg unraid-labelman
+
+rm -rf /usr/local/emhttp/plugins/labelman
+rm -rf /boot/config/plugins/labelman
+]]>
+</INLINE>
+</FILE>
+
+</PLUGIN>

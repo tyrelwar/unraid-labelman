@@ -1,0 +1,9 @@
+               |-----handy-ruler------------------------------------------------------|
+unraid-labelman: unraid-labelman (Label Manager)
+unraid-labelman:
+unraid-labelman: This package provides a WebGUI page for managing labels on Unraid
+unraid-labelman: docker containers.  It allows you to add, remove, and edit labels
+unraid-labelman: for TSDProxy.
+unraid-labelman:
+unraid-labelman: https://github.com/dkaser/unraid-labelman
+unraid-labelman:
