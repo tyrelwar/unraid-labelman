@@ -22,7 +22,7 @@ For older releases, see https://github.com/dkaser/unraid-labelman/releases
 
 <FILE Name="/boot/config/plugins/labelman/unraid-labelman-2025.01.12b-noarch-1.txz">
 <URL>https://github.com/tyrelwar/unraid-labelman/archive/refs/tags/testing.tar.gz</URL>
-<SHA256>42d2f7aadd5ad2a0c224c1adaac94d4c8d235a3c94a71a3376805044136752cc</SHA256>
+<SHA256>cdfc05837a80a524c1be2ac6fb1f1c87f4c5960deb63b80903a5005df9afd083</SHA256>
 </FILE>
 
 <!--
