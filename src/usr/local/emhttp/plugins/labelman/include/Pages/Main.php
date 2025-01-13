@@ -41,7 +41,7 @@ Please select the container you would like to manage:
     <thead>
         <tr>
             <th>Container</th>
-            <?php if($show_TSDProxy) { ?><th class="filter-select filter-match">TSDProxy Enabled</th><?php } ?>
+            <?php if ($show_TSDProxy) { ?><th class="filter-select filter-match">TSDProxy Enabled</th><?php } ?>
             <th class="filter-false">Actions</th>
         </tr>
     </thead>
@@ -52,12 +52,12 @@ Please select the container you would like to manage:
                 if ( ! $configFile || ! str_starts_with($configFile, "/boot/config/plugins/dockerMan/templates-user/my-")) {
                     continue;
                 }
-                $container = new Container($configFile);
+                $container    = new Container($configFile);
                 $containerURL = urlencode($c);
 
                 $row = "<tr><td>{$c}</td>";
 
-                if($show_TSDProxy) { 
+                if ($show_TSDProxy) {
                     $row .= "<td>" . ($container->TSDProxy->isEnabled() ? "Yes" : "No") . "</td>";
                 }
 

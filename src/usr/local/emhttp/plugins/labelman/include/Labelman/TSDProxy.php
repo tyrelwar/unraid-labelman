@@ -105,7 +105,8 @@ class TSDProxy implements Service
         }
     }
 
-    public function isEnabled(): bool {
+    public function isEnabled(): bool
+    {
         return $this->enable;
     }
 }
