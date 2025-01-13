@@ -24,6 +24,11 @@ require_once "{$docroot}/plugins/labelman/include/common.php";
 
 $dockerOut = Utils::run_command('docker container ls --format="{{.Names}}" --filter "label=net.unraid.docker.managed=dockerman"');
 sort($dockerOut, SORT_STRING | SORT_FLAG_CASE);
+
+$images = Utils::getImages();
+
+$show_TSDProxy = TSDProxy::serviceExists($images);
+
 ?>
 <script src="/webGui/javascript/jquery.tablesorter.widgets.js"></script>
 <link type="text/css" rel="stylesheet" href="/plugins/labelman/style.css">
@@ -36,7 +41,7 @@ Please select the container you would like to manage:
     <thead>
         <tr>
             <th>Container</th>
-            <th class="filter-select filter-match">TSDProxy Enabled</th>
+            <?php if($show_TSDProxy) { ?><th class="filter-select filter-match">TSDProxy Enabled</th><?php } ?>
             <th class="filter-false">Actions</th>
         </tr>
     </thead>
@@ -48,11 +53,17 @@ Please select the container you would like to manage:
                     continue;
                 }
                 $container = new Container($configFile);
-
-                $enabled = $container->TSDProxy->enable ? "Yes" : "No";
-
                 $containerURL = urlencode($c);
-                echo("<tr><td>{$c}</td><td>{$enabled}</td><td><a href='/Settings/Labelman?container={$containerURL}'>Edit</a></td></tr>");
+
+                $row = "<tr><td>{$c}</td>";
+
+                if($show_TSDProxy) { 
+                    $row .= "<td>" . ($container->TSDProxy->isEnabled() ? "Yes" : "No") . "</td>";
+                }
+
+                $row .= "<td><a href='/Settings/Labelman?container={$containerURL}'>Edit</a></td></tr>";
+
+                echo($row);
             }
 ?>
     </tbody>

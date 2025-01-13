@@ -47,7 +47,7 @@ class Container
         }
 
         $this->labels   = $labels;
-        $this->TSDProxy = new TSDProxy($labels);
+        $this->TSDProxy = new TSDProxy($this);
         $this->config   = $config;
     }
 

@@ -19,7 +19,7 @@ namespace Labelman;
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-class TSDProxy
+class TSDProxy implements Service
 {
     public bool $enable        = false;
     public bool $ephemeral     = false;
@@ -29,11 +29,10 @@ class TSDProxy
     public string $scheme      = "http";
     public bool $tlsvalidate   = true;
 
-    /**
-    * @param array<string,string> $labels
-    */
-    public function __construct(array $labels)
+    public function __construct(Container $container)
     {
+        $labels = $container->getLabels();
+
         if (($labels['tsdproxy.enable'] ?? null) == "true") {
             $this->enable = true;
         }
@@ -57,14 +56,24 @@ class TSDProxy
         }
     }
 
+    public static function serviceExists(array $images): bool
+    {
+        $tsdFound = false;
+        foreach ($images as $image) {
+            if (str_contains(strtolower($image), "tsdproxy")) {
+                $tsdFound = true;
+                break;
+            }
+        }
+
+        return $tsdFound;
+    }
+
     public function display(Container $container): void
     {
         include __DIR__ . "/../displays/TSDProxy.php";
     }
 
-    /**
-    * @param array<string,string> $post
-    */
     public function update(\SimpleXMLElement &$config, array $post): void
     {
         if ($this->enable != ($post['TSDProxy_enable'] == "true")) {
@@ -94,5 +103,9 @@ class TSDProxy
         if ($this->scheme != $post['TSDProxy_scheme']) {
             Utils::apply_label($config, 'tsdproxy.scheme', $post['TSDProxy_scheme'], "http");
         }
+    }
+
+    public function isEnabled(): bool {
+        return $this->enable;
     }
 }

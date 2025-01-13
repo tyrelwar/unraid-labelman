@@ -21,6 +21,14 @@ namespace Labelman;
 
 class Utils
 {
+    /**
+     * @return array<string>
+     */
+    public static function getImages(): array
+    {
+        return Utils::run_command('docker container ls --format="{{.Image}}"');
+    }
+
     public static function make_option(bool $selected, string $value, string $text, string $extra = ""): string
     {
         return "<option value='{$value}'" . ($selected ? " selected" : "") . (strlen($extra) ? " {$extra}" : "") . ">{$text}</option>";
