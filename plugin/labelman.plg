@@ -47,7 +47,7 @@ echo ""
 </FILE>
 
 <!--
-The 'remove' script.ßßßß
+The 'remove' script.
 -->
 <FILE Run="/bin/bash" Method="remove">
 <INLINE>
