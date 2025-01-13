@@ -33,6 +33,8 @@ if ( ! $configFile || ! str_starts_with($configFile, "/boot/config/plugins/docke
 }
 
 $container = new Container($configFile);
+
+$images = Utils::getImages();
 ?>
 <link type="text/css" rel="stylesheet" href="<?= Utils::auto_v('/webGui/styles/jquery.switchbutton.css');?>">
 <span class="status vhshift"><input type="checkbox" class="advancedview"></span>
@@ -42,7 +44,13 @@ $container = new Container($configFile);
 <form action="/plugins/labelman/update.php" method="POST" target="progressFrame">
 <input type="hidden" name="containerName" value="<?= urlencode($containerName); ?>">
 
-<?php $container->TSDProxy->display($container); ?>
+<?php
+
+if (TSDProxy::serviceExists($images)) {
+    $container->TSDProxy->display($container);
+}
+
+?>
 
 <h3>Save Settings</h3>
 
