@@ -25,6 +25,7 @@ class Container
     private array $labels;
     public \SimpleXMLElement $config;
     public TSDProxy $TSDProxy;
+    public Swag $Swag;
 
     public function __construct(string $configFile)
     {
@@ -47,7 +48,8 @@ class Container
         }
 
         $this->labels   = $labels;
-        $this->TSDProxy = new TSDProxy($labels);
+        if(isset($this->TSDProxy->enable)){ $this->TSDProxy = new TSDProxy($labels);}
+        else { $this->Swag = new Swag($labels);}
         $this->config   = $config;
     }
 
