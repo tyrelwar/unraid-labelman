@@ -1,0 +1,9 @@
+{
+    "title": "Label Manager",
+    "filters": [],
+    "commands": [],
+    "files": [
+        "/var/log/labelman*"
+    ],
+    "system_diagnostics": true
+}
