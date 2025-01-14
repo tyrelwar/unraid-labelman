@@ -43,7 +43,7 @@ class Container
 
         foreach ($config->Config as $c) {
             $attributes = $c->attributes();
-            if ($attributes['Type'] == "Label") {
+            if (isset($attributes['Type']) && $attributes['Type'] == "Label") {
                 $labels[(string)$attributes['Target']] = (string)$c;
             }
         }

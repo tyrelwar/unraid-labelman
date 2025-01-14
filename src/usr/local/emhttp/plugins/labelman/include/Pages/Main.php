@@ -28,8 +28,14 @@ $sysInfo = new SystemInfo();
 $serviceEnabled = array();
 
 $services = Utils::getServices();
-foreach ($services as $service) {
-    $serviceEnabled[$service] = $service::serviceExists($sysInfo);
+
+foreach ($services as $k => $service) {
+    try {
+        $serviceEnabled[$service] = $service::serviceExists($sysInfo);
+    } catch (\Throwable $e) {
+        unset($services[$k]);
+        Utils::logmsg("Error checking if {$service} exists: {$e->getMessage()}");
+    }
 }
 
 ?>
@@ -45,9 +51,14 @@ Please select the container you would like to manage:
         <tr>
             <th>Container</th>
             <?php
-                foreach ($services as $service) {
-                    if ($serviceEnabled[$service]) {
-                        echo("<th class='filter-select filter-match'>{$service::getDisplayName()} Enabled</th>");
+                foreach ($services as $k => $service) {
+                    try {
+                        if ($serviceEnabled[$service]) {
+                            echo("<th class='filter-select filter-match'>{$service::getDisplayName()} Enabled</th>");
+                        }
+                    } catch (\Throwable $e) {
+                        unset($services[$k]);
+                        Utils::logmsg("Error checking if {$service} exists: {$e->getMessage()}");
                     }
                 }
 ?>
@@ -67,8 +78,13 @@ Please select the container you would like to manage:
                 $row = "<tr><td>{$c}</td>";
 
                 foreach ($services as $service) {
-                    if ($serviceEnabled[$service]) {
-                        $row .= "<td>" . ($container->Services[$service]->isEnabled() ? "Yes" : "No") . "</td>";
+                    try {
+                        if ($serviceEnabled[$service]) {
+                            $row .= "<td>" . ($container->Services[$service]->isEnabled() ? "Yes" : "No") . "</td>";
+                        }
+                    } catch (\Throwable $e) {
+                        Utils::logmsg("Error checking if {$service} enabled: {$e->getMessage()}");
+                        $row .= "<td>Unknown</td>";
                     }
                 }
 
