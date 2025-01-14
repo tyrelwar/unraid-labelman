@@ -4,7 +4,7 @@
 <PLUGIN 
   name="labelman"
   author="Derek Kaser"
-  version="2025.01.13"
+  version="2025.01.13b"
   pluginURL="https://raw.githubusercontent.com/dkaser/unraid-labelman/main/plugin/labelman.plg"
   support="https://forums.unraid.net/topic/184701-plugin-label-manager/"
   min="6.12.0"
@@ -13,18 +13,18 @@
 
 <CHANGES>
 <![CDATA[
-###2025.01.13###
-- Improved interface
-- Added plugin diagnostics configuration
-- Improved framework for adding new services
+###2025.01.13b###
+fix: always set tsdproxy.ephemeral
+
+**Full Changelog**: https://github.com/dkaser/unraid-labelman/compare/2025.01.13...2025.01.13b
 
 For older releases, see https://github.com/dkaser/unraid-labelman/releases
 ]]>
 </CHANGES>
 
-<FILE Name="/boot/config/plugins/labelman/unraid-labelman-2025.01.13-noarch-1.txz">
-<URL>https://github.com/dkaser/unraid-labelman/releases/download/2025.01.13/unraid-labelman-2025.01.13-noarch-1.txz</URL>
-<SHA256>db1de600a89c8d4e74bd10867fb29cab9152c4cf9c62408f0552b1a1103165e3</SHA256>
+<FILE Name="/boot/config/plugins/labelman/unraid-labelman-2025.01.13b-noarch-1.txz">
+<URL>https://github.com/dkaser/unraid-labelman/releases/download/2025.01.13b/unraid-labelman-2025.01.13b-noarch-1.txz</URL>
+<SHA256>4d3843fcd46dbc9fca0a157774b899603710162b56a3fea80872517839cdac77</SHA256>
 </FILE>
 
 <!--
@@ -33,15 +33,15 @@ The 'install' script.
 <FILE Run="/bin/bash">
 <INLINE>
 <![CDATA[
-upgradepkg --install-new /boot/config/plugins/labelman/unraid-labelman-2025.01.13-noarch-1.txz
+upgradepkg --install-new /boot/config/plugins/labelman/unraid-labelman-2025.01.13b-noarch-1.txz
 
 # cleanup old versions
-rm -f $(ls /boot/config/plugins/labelman/unraid-labelman-*.txz 2>/dev/null | grep -v '2025.01.13')
+rm -f $(ls /boot/config/plugins/labelman/unraid-labelman-*.txz 2>/dev/null | grep -v '2025.01.13b')
 
 echo ""
 echo "----------------------------------------------------"
 echo " labelman has been installed."
-echo " Version: 2025.01.13"
+echo " Version: 2025.01.13b"
 echo "----------------------------------------------------"
 echo ""
 ]]>
@@ -49,7 +49,7 @@ echo ""
 </FILE>
 
 <!--
-The 'remove' script.ßßßß
+The 'remove' script.
 -->
 <FILE Run="/bin/bash" Method="remove">
 <INLINE>
