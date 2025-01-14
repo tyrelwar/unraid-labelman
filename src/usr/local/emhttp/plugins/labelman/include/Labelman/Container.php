@@ -21,8 +21,9 @@ namespace Labelman;
 
 class Container
 {
-    /** @var array<string,string> $labels */
+    /** @var array<string,string> */
     private array $labels;
+
     public \SimpleXMLElement $config;
 
     /** @var array<string,Service> $Services */
@@ -34,16 +35,16 @@ class Container
             throw new \Exception("No config file found for {$configFile}");
         }
 
-        $labels = array();
         $config = simplexml_load_file($configFile);
-
         if ( ! $config) {
             throw new \Exception("Could not load config file for {$configFile}");
         }
 
+        $labels = array();
+
         foreach ($config->Config as $c) {
             $attributes = $c->attributes();
-            if (isset($attributes['Type']) && $attributes['Type'] == "Label") {
+            if (isset($attributes['Type']) && strtolower($attributes['Type']) == "label") {
                 $labels[(string)$attributes['Target']] = (string)$c;
             }
         }
