@@ -19,24 +19,40 @@ namespace Labelman;
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-$docroot = $docroot ?? $_SERVER['DOCUMENT_ROOT'] ?: '/usr/local/emhttp';
+$docroot = isset($docroot) ? $docroot : (isset($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : '/usr/local/emhttp');
 require_once "{$docroot}/plugins/labelman/include/common.php";
 
 readfile('/usr/local/emhttp/update.htm');
 
-if ( ! isset($_POST['containerName'])) {
+if (!isset($_POST['containerName'])) {
     throw new \Exception("No container specified");
 }
 
 $containerName = $_POST['containerName'];
 $configFile    = realpath("/boot/config/plugins/dockerMan/templates-user/my-{$containerName}.xml");
-if ( ! $configFile || ! str_starts_with($configFile, "/boot/config/plugins/dockerMan/templates-user/my-")) {
+if (!$configFile || substr($configFile, 0, strlen("/boot/config/plugins/dockerMan/templates-user/my-")) !== "/boot/config/plugins/dockerMan/templates-user/my-") {
     throw new \Exception("Bad Request");
 }
 
 $container = new Container($configFile);
 
-$container->TSDProxy->update($container->config, $_POST);
+// Determine the container type
+$containerType = isset($_POST['containerType']) ? $_POST['containerType'] : 'tsdproxy';
+
+// Update the container type in the config
+$container->config->type = $containerType;
+
+// Update the appropriate container settings
+switch ($containerType) {
+    case 'tsdproxy':
+        $container->TSDProxy->update($container->config, $_POST);
+        break;
+    case 'swag':
+        $container->Swag->update($container->config, $_POST);
+        break;
+    default:
+        throw new \Exception("Invalid container type");
+}
 
 $dom                     = new \DOMDocument('1.0');
 $dom->preserveWhiteSpace = false;
