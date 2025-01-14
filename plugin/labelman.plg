@@ -3,9 +3,9 @@
 
 <PLUGIN 
   name="labelman"
-  author="Derek Kaser"
-  version="2025.01.12b"
-  pluginURL="https://raw.githubusercontent.com/dkaser/unraid-labelman/main/plugin/labelman.plg"
+  author="tyrelwar"
+  version="testing"
+  pluginURL="https://raw.githubusercontent.com/tyrelwar/unraid-labelman/main/plugin/labelman.plg"
   support="https://forums.unraid.net/topic/184701-plugin-label-manager/"
   min="6.12.0"
   icon="fa-tags"
@@ -21,8 +21,8 @@ For older releases, see https://github.com/dkaser/unraid-labelman/releases
 </CHANGES>
 
 <FILE Name="/boot/config/plugins/labelman/unraid-labelman-2025.01.12b-noarch-1.txz">
-<URL>https://github.com/dkaser/unraid-labelman/releases/download/2025.01.12b/unraid-labelman-2025.01.12b-noarch-1.txz</URL>
-<SHA256>42d2f7aadd5ad2a0c224c1adaac94d4c8d235a3c94a71a3376805044136752cc</SHA256>
+<URL>https://github.com/tyrelwar/unraid-labelman/archive/refs/tags/testing.tar.gz</URL>
+<SHA256>cdfc05837a80a524c1be2ac6fb1f1c87f4c5960deb63b80903a5005df9afd083</SHA256>
 </FILE>
 
 <!--
@@ -47,7 +47,7 @@ echo ""
 </FILE>
 
 <!--
-The 'remove' script.ßßßß
+The 'remove' script.
 -->
 <FILE Run="/bin/bash" Method="remove">
 <INLINE>
