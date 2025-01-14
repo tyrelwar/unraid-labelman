@@ -47,13 +47,18 @@ $sysInfo   = new SystemInfo();
 
 $services = Utils::getServices();
 foreach ($services as $service) {
-    if ($service::serviceExists($sysInfo)) {
-        $container->Services[$service]->display($container);
+    try {
+        if ($service::serviceExists($sysInfo)) {
+            echo "<div class='title'><span class='left'>{$service::getDisplayName()}</span></div>";
+            $container->Services[$service]->display($container);
+        }
+    } catch (\Throwable $e) {
+        Utils::logmsg("Error displaying {$service}: {$e->getMessage()}");
     }
 }
 ?>
 
-<h3>Save Settings</h3>
+<div class='title'><span class='left'>Save Settings</span></div>
 
 <dl>
     <dt>&nbsp;</dt>

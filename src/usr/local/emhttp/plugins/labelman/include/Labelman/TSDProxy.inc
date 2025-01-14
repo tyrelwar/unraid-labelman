@@ -24,8 +24,6 @@ if ( ! isset($this)) {
 }
 ?>
 
-<h3>TSDProxy</h3>
-
 <dl>
   <dt>Enabled</dt>
   <dd>

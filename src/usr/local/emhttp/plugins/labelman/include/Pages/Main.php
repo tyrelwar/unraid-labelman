@@ -42,10 +42,6 @@ foreach ($services as $k => $service) {
 <script src="/webGui/javascript/jquery.tablesorter.widgets.js"></script>
 <link type="text/css" rel="stylesheet" href="/plugins/labelman/style.css">
 
-<h3>Label Manager</h3>
-
-Please select the container you would like to manage:
-
 <table id='statusTable' class="unraid statusTable tablesorter">
     <thead>
         <tr>
