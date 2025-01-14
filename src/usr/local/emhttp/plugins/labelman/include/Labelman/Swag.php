@@ -19,7 +19,7 @@ namespace Labelman;
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-class Swag
+ class swag implements Service
 {
     public bool $swag        = false;
 

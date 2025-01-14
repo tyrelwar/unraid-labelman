@@ -20,7 +20,7 @@ namespace Labelman;
 */
 
 if ( ! isset($this)) {
-    throw new \Exception("TSDProxy.inc called outside class");
+    throw new \Exception("Swag.inc called outside class");
 }
 ?>
 
