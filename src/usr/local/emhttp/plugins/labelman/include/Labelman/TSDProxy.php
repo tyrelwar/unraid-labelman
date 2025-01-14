@@ -85,7 +85,7 @@ class TSDProxy implements Service
             Utils::apply_label($config, 'tsdproxy.enable', $post['TSDProxy_enable'], "false");
         }
 
-        if ($this->ephemeral != ($post['TSDProxy_ephemeral'] == "true")) {
+        if (($this->ephemeral != ($post['TSDProxy_ephemeral'] == "true")) || ($post['TSDProxy_enable'] == "true")) {
             Utils::apply_label($config, 'tsdproxy.ephemeral', $post['TSDProxy_ephemeral']);
         }
 
