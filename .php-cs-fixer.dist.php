@@ -5,6 +5,7 @@ $finder = PhpCsFixer\Finder::create()
     ->in(__DIR__)
     ->name('*.php')
     ->name('*.page')
+    ->name('*.inc')
 ;
 
 $config = new PhpCsFixer\Config();

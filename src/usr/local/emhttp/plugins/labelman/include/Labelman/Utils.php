@@ -24,9 +24,17 @@ class Utils
     /**
      * @return array<string>
      */
-    public static function getImages(): array
+    public static function getServices(): array
     {
-        return Utils::run_command('docker container ls --format="{{.Image}}"');
+        $services = array();
+        foreach (get_declared_classes() as $className) {
+            if (in_array('Labelman\\Service', class_implements($className))) {
+                $services[] = $className;
+            }
+        }
+        sort($services, SORT_STRING | SORT_FLAG_CASE);
+
+        return $services;
     }
 
     public static function make_option(bool $selected, string $value, string $text, string $extra = ""): string

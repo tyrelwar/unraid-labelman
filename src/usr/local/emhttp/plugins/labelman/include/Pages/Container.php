@@ -33,8 +33,7 @@ if ( ! $configFile || ! str_starts_with($configFile, "/boot/config/plugins/docke
 }
 
 $container = new Container($configFile);
-
-$images = Utils::getImages();
+$sysInfo   = new SystemInfo();
 ?>
 <link type="text/css" rel="stylesheet" href="<?= Utils::auto_v('/webGui/styles/jquery.switchbutton.css');?>">
 <span class="status vhshift"><input type="checkbox" class="advancedview"></span>
@@ -46,10 +45,12 @@ $images = Utils::getImages();
 
 <?php
 
-if (TSDProxy::serviceExists($images)) {
-    $container->TSDProxy->display($container);
+$services = Utils::getServices();
+foreach ($services as $service) {
+    if ($service::serviceExists($sysInfo)) {
+        $container->Services[$service]->display($container);
+    }
 }
-
 ?>
 
 <h3>Save Settings</h3>

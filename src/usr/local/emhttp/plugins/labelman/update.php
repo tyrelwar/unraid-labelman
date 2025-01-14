@@ -36,18 +36,28 @@ if ( ! $configFile || ! str_starts_with($configFile, "/boot/config/plugins/docke
 
 $container = new Container($configFile);
 
-$container->TSDProxy->update($container->config, $_POST);
+$services = Utils::getServices();
+try {
+    foreach ($services as $service) {
+        $container->Services[$service]->update($container->config, $_POST);
+    }
+} catch (\Throwable $e) {
+    Utils::logmsg("Error updating {$service}: {$e->getMessage()}");
+}
 
-$dom                     = new \DOMDocument('1.0');
-$dom->preserveWhiteSpace = false;
-$dom->formatOutput       = true;
-$dom->loadXML($container->config->asXML());
+$xml = $container->config->asXML();
+if ($xml) {
+    $dom                     = new \DOMDocument('1.0');
+    $dom->preserveWhiteSpace = false;
+    $dom->formatOutput       = true;
+    $dom->loadXML($xml);
 
-// Create config backup
-$time = time();
-copy($configFile, "/boot/config/plugins/labelman/{$containerName}.{$time}.xml");
+    // Create config backup
+    $time = time();
+    copy($configFile, "/boot/config/plugins/labelman/{$containerName}.{$time}.xml");
 
-// Write config file
-file_put_contents($configFile, $dom->saveXML());
+    // Write config file
+    file_put_contents($configFile, $dom->saveXML());
 
-Utils::run_command("/usr/local/emhttp/plugins/dynamix.docker.manager/scripts/rebuild_container '{$containerName}'");
+    Utils::run_command("/usr/local/emhttp/plugins/dynamix.docker.manager/scripts/rebuild_container '{$containerName}'");
+}

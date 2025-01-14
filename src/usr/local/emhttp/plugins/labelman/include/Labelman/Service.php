@@ -26,12 +26,10 @@ interface Service
     public function isEnabled(): bool;
 
     /**
-    * @param array<string> $images
-    */
-    public static function serviceExists(array $images): bool;
-
-    /**
     * @param array<string,string> $post
     */
     public function update(\SimpleXMLElement &$config, array $post): void;
+
+    public static function serviceExists(SystemInfo $info): bool;
+    public static function getDisplayName(): string;
 }

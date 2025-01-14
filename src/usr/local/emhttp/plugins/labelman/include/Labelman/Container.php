@@ -24,7 +24,9 @@ class Container
     /** @var array<string,string> $labels */
     private array $labels;
     public \SimpleXMLElement $config;
-    public TSDProxy $TSDProxy;
+
+    /** @var array<string,Service> $Services */
+    public array $Services = array();
 
     public function __construct(string $configFile)
     {
@@ -46,9 +48,22 @@ class Container
             }
         }
 
-        $this->labels   = $labels;
-        $this->TSDProxy = new TSDProxy($this);
-        $this->config   = $config;
+        $this->labels = $labels;
+        $this->config = $config;
+
+        $services = Utils::getServices();
+        foreach ($services as $service) {
+            try {
+                $newService = new $service($this);
+                if ($newService instanceof Service) {
+                    $this->Services[$service] = $newService;
+                } else {
+                    Utils::logmsg("Service {$service} does not implement Service interface");
+                }
+            } catch (\Throwable $e) {
+                Utils::logmsg("Error loading service {$service}: {$e->getMessage()}");
+            }
+        }
     }
 
     /** @return array<string,string> */

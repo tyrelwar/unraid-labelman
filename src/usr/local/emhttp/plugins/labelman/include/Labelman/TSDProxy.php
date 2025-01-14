@@ -56,10 +56,10 @@ class TSDProxy implements Service
         }
     }
 
-    public static function serviceExists(array $images): bool
+    public static function serviceExists(SystemInfo $info): bool
     {
         $tsdFound = false;
-        foreach ($images as $image) {
+        foreach ($info->Images as $image) {
             if (str_contains(strtolower($image), "tsdproxy")) {
                 $tsdFound = true;
                 break;
@@ -69,9 +69,14 @@ class TSDProxy implements Service
         return $tsdFound;
     }
 
+    public static function getDisplayName(): string
+    {
+        return "TSDProxy";
+    }
+
     public function display(Container $container): void
     {
-        include __DIR__ . "/../displays/TSDProxy.php";
+        include __DIR__ . "/TSDProxy.inc";
     }
 
     public function update(\SimpleXMLElement &$config, array $post): void

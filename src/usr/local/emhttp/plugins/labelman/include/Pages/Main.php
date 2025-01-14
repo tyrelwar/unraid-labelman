@@ -22,12 +22,15 @@ namespace Labelman;
 $docroot = $docroot ?? $_SERVER['DOCUMENT_ROOT'] ?: '/usr/local/emhttp';
 require_once "{$docroot}/plugins/labelman/include/common.php";
 
-$dockerOut = Utils::run_command('docker container ls --format="{{.Names}}" --filter "label=net.unraid.docker.managed=dockerman"');
-sort($dockerOut, SORT_STRING | SORT_FLAG_CASE);
+$sysInfo = new SystemInfo();
 
-$images = Utils::getImages();
+/** @var array<string,bool> $serviceEnabled */
+$serviceEnabled = array();
 
-$show_TSDProxy = TSDProxy::serviceExists($images);
+$services = Utils::getServices();
+foreach ($services as $service) {
+    $serviceEnabled[$service] = $service::serviceExists($sysInfo);
+}
 
 ?>
 <script src="/webGui/javascript/jquery.tablesorter.widgets.js"></script>
@@ -41,13 +44,19 @@ Please select the container you would like to manage:
     <thead>
         <tr>
             <th>Container</th>
-            <?php if ($show_TSDProxy) { ?><th class="filter-select filter-match">TSDProxy Enabled</th><?php } ?>
+            <?php
+                foreach ($services as $service) {
+                    if ($serviceEnabled[$service]) {
+                        echo("<th class='filter-select filter-match'>{$service::getDisplayName()} Enabled</th>");
+                    }
+                }
+?>
             <th class="filter-false">Actions</th>
         </tr>
     </thead>
     <tbody>
         <?php
-            foreach ($dockerOut as $c) {
+            foreach ($sysInfo->ManagedContainers as $c) {
                 $configFile = realpath("/boot/config/plugins/dockerMan/templates-user/my-{$c}.xml");
                 if ( ! $configFile || ! str_starts_with($configFile, "/boot/config/plugins/dockerMan/templates-user/my-")) {
                     continue;
@@ -57,8 +66,10 @@ Please select the container you would like to manage:
 
                 $row = "<tr><td>{$c}</td>";
 
-                if ($show_TSDProxy) {
-                    $row .= "<td>" . ($container->TSDProxy->isEnabled() ? "Yes" : "No") . "</td>";
+                foreach ($services as $service) {
+                    if ($serviceEnabled[$service]) {
+                        $row .= "<td>" . ($container->Services[$service]->isEnabled() ? "Yes" : "No") . "</td>";
+                    }
                 }
 
                 $row .= "<td><a href='/Settings/Labelman?container={$containerURL}'>Edit</a></td></tr>";
