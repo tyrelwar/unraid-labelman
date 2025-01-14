@@ -3,5 +3,6 @@ parameters:
 	fileExtensions:
 		- php
 		- page
+		- inc
 	paths:
 		- src

@@ -21,11 +21,13 @@ namespace Labelman;
 
 class Container
 {
-    /** @var array<string,string> $labels */
+    /** @var array<string,string> */
     private array $labels;
+
     public \SimpleXMLElement $config;
-    public TSDProxy $TSDProxy;
-    public Swag $Swag;
+
+    /** @var array<string,Service> $Services */
+    public array $Services = array();
 
     public function __construct(string $configFile)
     {
@@ -33,24 +35,36 @@ class Container
             throw new \Exception("No config file found for {$configFile}");
         }
 
-        $labels = array();
         $config = simplexml_load_file($configFile);
-
         if ( ! $config) {
             throw new \Exception("Could not load config file for {$configFile}");
         }
 
+        $labels = array();
+
         foreach ($config->Config as $c) {
             $attributes = $c->attributes();
-            if ($attributes['Type'] == "Label") {
+            if (isset($attributes['Type']) && strtolower($attributes['Type']) == "label") {
                 $labels[(string)$attributes['Target']] = (string)$c;
             }
         }
 
-        $this->labels   = $labels;
-        if(isset($this->TSDProxy->enable)){ $this->TSDProxy = new TSDProxy($labels);}
-        else { $this->Swag = new Swag($labels);}
-        $this->config   = $config;
+        $this->labels = $labels;
+        $this->config = $config;
+
+        $services = Utils::getServices();
+        foreach ($services as $service) {
+            try {
+                $newService = new $service($this);
+                if ($newService instanceof Service) {
+                    $this->Services[$service] = $newService;
+                } else {
+                    Utils::logmsg("Service {$service} does not implement Service interface");
+                }
+            } catch (\Throwable $e) {
+                Utils::logmsg("Error loading service {$service}: {$e->getMessage()}");
+            }
+        }
     }
 
     /** @return array<string,string> */

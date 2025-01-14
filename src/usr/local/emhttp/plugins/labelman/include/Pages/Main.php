@@ -22,37 +22,71 @@ namespace Labelman;
 $docroot = $docroot ?? $_SERVER['DOCUMENT_ROOT'] ?: '/usr/local/emhttp';
 require_once "{$docroot}/plugins/labelman/include/common.php";
 
-$dockerOut = Utils::run_command('docker container ls --format="{{.Names}}" --filter "label=net.unraid.docker.managed=dockerman"');
-sort($dockerOut, SORT_STRING | SORT_FLAG_CASE);
+$sysInfo = new SystemInfo();
+
+/** @var array<string,bool> $serviceEnabled */
+$serviceEnabled = array();
+
+$services = Utils::getServices();
+
+foreach ($services as $k => $service) {
+    try {
+        $serviceEnabled[$service] = $service::serviceExists($sysInfo);
+    } catch (\Throwable $e) {
+        unset($services[$k]);
+        Utils::logmsg("Error checking if {$service} exists: {$e->getMessage()}");
+    }
+}
+
 ?>
 <script src="/webGui/javascript/jquery.tablesorter.widgets.js"></script>
 <link type="text/css" rel="stylesheet" href="/plugins/labelman/style.css">
-
-<h3>Label Manager</h3>
-
-Please select the container you would like to manage:
 
 <table id='statusTable' class="unraid statusTable tablesorter">
     <thead>
         <tr>
             <th>Container</th>
-            <th class="filter-select filter-match">TSDProxy Enabled</th>
+            <?php
+                foreach ($services as $k => $service) {
+                    try {
+                        if ($serviceEnabled[$service]) {
+                            echo("<th class='filter-select filter-match'>{$service::getDisplayName()} Enabled</th>");
+                        }
+                    } catch (\Throwable $e) {
+                        unset($services[$k]);
+                        Utils::logmsg("Error checking if {$service} exists: {$e->getMessage()}");
+                    }
+                }
+?>
             <th class="filter-false">Actions</th>
         </tr>
     </thead>
     <tbody>
         <?php
-            foreach ($dockerOut as $c) {
+            foreach ($sysInfo->ManagedContainers as $c) {
                 $configFile = realpath("/boot/config/plugins/dockerMan/templates-user/my-{$c}.xml");
                 if ( ! $configFile || ! str_starts_with($configFile, "/boot/config/plugins/dockerMan/templates-user/my-")) {
                     continue;
                 }
-                $container = new Container($configFile);
-
-                $enabled = $container->TSDProxy->enable ? "Yes" : "No";
-
+                $container    = new Container($configFile);
                 $containerURL = urlencode($c);
-                echo("<tr><td>{$c}</td><td>{$enabled}</td><td><a href='/Settings/Labelman?container={$containerURL}'>Edit</a></td></tr>");
+
+                $row = "<tr><td>{$c}</td>";
+
+                foreach ($services as $service) {
+                    try {
+                        if ($serviceEnabled[$service]) {
+                            $row .= "<td>" . ($container->Services[$service]->isEnabled() ? "Yes" : "No") . "</td>";
+                        }
+                    } catch (\Throwable $e) {
+                        Utils::logmsg("Error checking if {$service} enabled: {$e->getMessage()}");
+                        $row .= "<td>Unknown</td>";
+                    }
+                }
+
+                $row .= "<td><a href='/Settings/Labelman?container={$containerURL}'>Edit</a></td></tr>";
+
+                echo($row);
             }
 ?>
     </tbody>

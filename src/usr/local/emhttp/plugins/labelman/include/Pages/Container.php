@@ -33,6 +33,7 @@ if ( ! $configFile || ! str_starts_with($configFile, "/boot/config/plugins/docke
 }
 
 $container = new Container($configFile);
+$sysInfo   = new SystemInfo();
 ?>
 <link type="text/css" rel="stylesheet" href="<?= Utils::auto_v('/webGui/styles/jquery.switchbutton.css');?>">
 <span class="status vhshift"><input type="checkbox" class="advancedview"></span>
@@ -40,35 +41,31 @@ $container = new Container($configFile);
 <h2><?= $containerName; ?></h2>
 
 <form action="/plugins/labelman/update.php" method="POST" target="progressFrame">
-    <input type="hidden" name="containerName" value="<?= urlencode($containerName); ?>">
+<input type="hidden" name="containerName" value="<?= urlencode($containerName); ?>">
 
-    <h3>Container Type</h3>
-    <dl>
-        <dt>Select Container Type:</dt>
-        <dd>
-            <select name="containerType" id="containerType">
-                <option value="tsdproxy" <?= $container->type === 'tsdproxy' ? 'selected' : ''; ?>>TSDProxy</option>
-                <option value="swag" <?= $container->type === 'swag' ? 'selected' : ''; ?>>Swag</option>
-            </select>
-        </dd>
-    </dl>
+<?php
 
-    <div id="tsdproxySettings" style="display: <?= $container->type === 'tsdproxy' ? 'block' : 'none'; ?>">
-        <?php $container->TSDProxy->display($container); ?>
-    </div>
+$services = Utils::getServices();
+foreach ($services as $service) {
+    try {
+        if ($service::serviceExists($sysInfo)) {
+            echo "<div class='title'><span class='left'>{$service::getDisplayName()}</span></div>";
+            $container->Services[$service]->display($container);
+        }
+    } catch (\Throwable $e) {
+        Utils::logmsg("Error displaying {$service}: {$e->getMessage()}");
+    }
+}
+?>
 
-    <div id="swagSettings" style="display: <?= $container->type === 'swag' ? 'block' : 'none'; ?>">
-        <?php $container->Swag->display($container); ?>
-    </div>
+<div class='title'><span class='left'>Save Settings</span></div>
 
-    <h3>Save Settings</h3>
-
-    <dl>
-        <dt>&nbsp;</dt>
-        <dd>
-            <input type="submit" name="#apply" value="Apply"><input type="button" id="DONE" value="Back" onclick="window.location.href='/Settings/Labelman'">
-        </dd>
-    </dl>
+<dl>
+    <dt>&nbsp;</dt>
+    <dd>
+        <input type="submit" name="#apply" value="Apply"><input type="button" id="DONE" value="Back" onclick="window.location.href='/Settings/Labelman'">
+    </dd>
+</dl>
 </form>
 
 <script src="<?= Utils::auto_v('/webGui/javascript/jquery.switchbutton.js');?>"></script>
@@ -93,16 +90,6 @@ $container = new Container($configFile);
                 $('.advanced').hide('slow');
             }
             $.cookie('labelman_view_mode', $('.advancedview').is(':checked') ? 'advanced' : 'basic', {expires:3650});
-        });
-
-        $('#containerType').change(function() {
-            if ($(this).val() === 'tsdproxy') {
-                $('#tsdproxySettings').show();
-                $('#swagSettings').hide();
-            } else if ($(this).val() === 'swag') {
-                $('#tsdproxySettings').hide();
-                $('#swagSettings').show();
-            }
         });
     });
 </script>
