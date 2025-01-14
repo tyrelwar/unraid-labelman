@@ -19,19 +19,17 @@ namespace Labelman;
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-if ( ! isset($container)) {
-    throw new \Exception("Container not set");
+if ( ! isset($this)) {
+    throw new \Exception("TSDProxy.inc called outside class");
 }
-
 ?>
-<h3>Swag</h3>
 
 <dl>
     <dt>Enabled</dt>
     <dd>
         <select name='swag' size='1'>
-            <?= Utils::make_option($container->Swag->swag, 'enable', "Yes");?>
-            <?= Utils::make_option( ! $container->Swag->swag, 'false', "No");?>
+            <?= Utils::make_option($this->swag, 'enable', "Yes");?>
+            <?= Utils::make_option( !$this->swag, 'false', "No");?>
         </select>
     </dd>
 </dl>
@@ -39,7 +37,7 @@ if ( ! isset($container)) {
     <dl>
         <dt>Container Name</dt>
         <dd>
-            <input type="text" name="swag_address" class="narrow" min="0" max="65535" value="<?= $container->Swag->swag_address; ?>" placeholder="<?=$container?>">
+            <input type="text" name="swag_address" class="narrow" min="0" max="65535" value="<?= $this->swag_address; ?>" placeholder="<?=$this?>">
         </dd>
     </dl>
     <blockquote class='inline_help'>optional - overrides upstream app address. Can be set to an IP or a DNS hostname. Defaults to container name.</blockquote>
@@ -47,7 +45,7 @@ if ( ! isset($container)) {
     <dl>
         <dt>Container Port</dt>
         <dd>
-            <input type="number" name="swag_port" class="narrow" min="0" max="65535" value="<?= $container->Swag->swag_port; ?>" placeholder="0">
+            <input type="number" name="swag_port" class="narrow" min="0" max="65535" value="<?= $this->swag_port; ?>" placeholder="0">
         </dd>
     </dl>
     <blockquote class='inline_help'>The port on the container to proxy. Leave at default (0) to autodetect the correct port. This is usually only needed when a container publishes multiple ports.</blockquote>
@@ -56,8 +54,8 @@ if ( ! isset($container)) {
         <dt>Scheme</dt>
         <dd>
             <select name='swag_proto' size='1'>
-                <?= Utils::make_option($container->Swag->swag_prot == "http", 'http', "HTTP");?>
-                <?= Utils::make_option($container->Swag->swag_prot == "https", 'https', "HTTPS");?>
+                <?= Utils::make_option($this->swag_proto == "http", 'http', "HTTP");?>
+                <?= Utils::make_option($this->swag_proto == "https", 'https', "HTTPS");?>
             </select>
         </dd>
     </dl>
@@ -66,7 +64,7 @@ if ( ! isset($container)) {
     <dl>
         <dt>URL</dt>
         <dd>
-            <input type="text" name="swag_url" class="narrow" min="0" max="65535" value="<?= $container->Swag->swag_url; ?>" placeholder="<?=$container . '.domain.com'?>">
+            <input type="text" name="swag_url" class="narrow" min="0" max="65535" value="<?= $this->swag_url; ?>" placeholder="<?=$this . '.domain.com'?>">
         </dd>
     </dl>
     <blockquote class='inline_help'>optional - overrides server_name (defaults to containername.*)</blockquote>
@@ -75,14 +73,13 @@ if ( ! isset($container)) {
         <dt>swag_auth</dt>
         <dd>
             <select name='swag_auth' size='1'>
-                <?= Utils::make_option( ! $container->Swag->swag_auth, '', "None");?>
-                <?= Utils::make_option($container->Swag->swag_auth, 'authelia', "authelia");?>
-                <?= Utils::make_option( ! $container->Swag->swag_auth, 'ldap', "ldap");?>
-                <?= Utils::make_option( ! $container->Swag->swag_auth, 'http', "http");?>
+                <?= Utils::make_option( ! $this->swag_auth, '', "None");?>
+                <?= Utils::make_option($this->swag_auth, 'authelia', "authelia");?>
+                <?= Utils::make_option( ! $this->swag_auth, 'ldap', "ldap");?>
+                <?= Utils::make_option( ! $this->swag_auth, 'http', "http");?>
 
             </select>
         </dd>
     </dl>
     <blockquote class='inline_help'>optional - enables auth methods (options are authelia, ldap and http for basic http auth)</blockquote>
 </div>
-
