@@ -1,1 +1,65 @@
+<?xml version='1.0' standalone='yes'?>
+<!DOCTYPE PLUGIN [
+<!ENTITY name "labelman">
+<!ENTITY author "Derek Kaser">
+<!ENTITY version "1.0.2">
+<!ENTITY gitURL "https://github.com/tyrelwar/unraid-labelman">
+<!ENTITY pluginURL "&gitURL;/raw/main/plugin/&name;.plg">
+<!ENTITY supportURL "https://forums.unraid.net/topic/184701-plugin-label-manager/">
+<!ENTITY packages "/boot/config/plugins/&name;">
+]>
 
+<PLUGIN 
+  name="&name;"
+  author="&author;"
+  version="&version;"
+  pluginURL="&pluginURL;"
+  support="&supportURL;"
+  icon="fa-tags"
+  min="6.12.0"
+>
+
+<CHANGES>
+<![CDATA[
+### &version;
+updated plg template again. surely it works this time
+
+**Full Changelog**: https://github.com/tyrelwar/unraid-labelman/compare/1.0.1...1.0.2
+
+For older releases, see &gitURL;/releases
+]]>
+</CHANGES>
+
+<FILE Name="&packages;/&name;-&version;-noarch-1.txz" Run="upgradepkg --install-new">
+<URL>&gitURL;/releases/download/&version;/&name;-&version;-noarch-1.txz</URL>
+<SHA256>cf6e586ca12fcc56343b786c677a84be06ea3236ef5572d3aff76650675fa733</SHA256>
+</FILE>
+
+<FILE Run="/bin/bash">
+<INLINE>
+echo ""
+echo "----------------------------------------------------"
+echo " &name; has been installed."
+echo " Version: &version;"
+echo "----------------------------------------------------"
+echo ""
+echo "Cleaning old versions..."
+rm -f $(ls &packages;/&name;-*.txz 2>/dev/null | grep -v '&version;')
+</INLINE>
+</FILE>
+
+<FILE Run="/bin/bash" Method="remove">
+<INLINE>
+removepkg &name;-&version;-noarch-1
+rm -rf /usr/local/emhttp/plugins/&name;
+rm -rf &packages;
+echo ""
+echo "-----------------------------------------------------------"
+echo " &name; has been removed."
+echo " Version: &version;"
+echo "-----------------------------------------------------------"
+echo ""
+</INLINE>
+</FILE>
+
+</PLUGIN>
