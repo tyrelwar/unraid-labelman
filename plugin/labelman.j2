@@ -1,62 +1,62 @@
 <?xml version='1.0' standalone='yes'?>
-<!DOCTYPE PLUGIN [
-<!ENTITY name "labelman">
-<!ENTITY author "Derek Kaser">
-<!ENTITY version "{{ env['PLUGIN_VERSION'] }}">
-<!ENTITY gitURL "https://github.com/tyrelwar/unraid-labelman">
-<!ENTITY pluginURL "&gitURL;/raw/main/plugin/&name;.plg">
-<!ENTITY supportURL "https://forums.unraid.net/topic/184701-plugin-label-manager/">
-<!ENTITY packages "/boot/config/plugins/&name;">
-]>
+<!DOCTYPE PLUGIN>
 
 <PLUGIN 
-  name="&name;"
-  author="&author;"
-  version="&version;"
-  pluginURL="&pluginURL;"
-  support="&supportURL;"
-  icon="fa-tags"
+  name="labelman"
+  author="Derek Kaser"
+  version="{{ env['PLUGIN_VERSION'] }}"
+  pluginURL="https://raw.githubusercontent.com/tyrelwar/unraid-labelman/main/plugin/labelman.plg"
+  support="https://forums.unraid.net/topic/184701-plugin-label-manager/"
   min="6.12.0"
+  icon="fa-tags"
 >
 
 <CHANGES>
 <![CDATA[
-### &version;
+###{{ env['PLUGIN_VERSION'] }}###
 {{ env['PLUGIN_CHANGELOG'] }}
 
-For older releases, see &gitURL;/releases
+For older releases, see https://github.com/tyrelwar/unraid-labelman/releases
 ]]>
 </CHANGES>
 
-<FILE Name="&packages;/&name;-&version;-noarch-1.txz" Run="upgradepkg --install-new">
-<URL>&gitURL;/releases/download/&version;/&name;-&version;-noarch-1.txz</URL>
+<FILE Name="/boot/config/plugins/labelman/unraid-labelman-{{ env['PLUGIN_VERSION'] }}-noarch-1.txz">
+<URL>https://github.com/tyrelwar/unraid-labelman/releases/download/{{ env['PLUGIN_VERSION'] }}/unraid-labelman-{{ env['PLUGIN_VERSION'] }}-noarch-1.txz</URL>
 <SHA256>{{ env['PLUGIN_CHECKSUM'] }}</SHA256>
 </FILE>
 
+<!--
+The 'install' script.
+-->
 <FILE Run="/bin/bash">
 <INLINE>
+<![CDATA[
+upgradepkg --install-new /boot/config/plugins/labelman/unraid-labelman-{{ env['PLUGIN_VERSION'] }}-noarch-1.txz
+
+# cleanup old versions
+rm -f $(ls /boot/config/plugins/labelman/unraid-labelman-*.txz 2>/dev/null | grep -v '{{ env['PLUGIN_VERSION'] }}')
+
 echo ""
 echo "----------------------------------------------------"
-echo " &name; has been installed."
-echo " Version: &version;"
+echo " labelman has been installed."
+echo " Version: {{ env['PLUGIN_VERSION'] }}"
 echo "----------------------------------------------------"
 echo ""
-echo "Cleaning old versions..."
-rm -f $(ls &packages;/&name;-*.txz 2>/dev/null | grep -v '&version;')
+]]>
 </INLINE>
 </FILE>
 
+<!--
+The 'remove' script.
+-->
 <FILE Run="/bin/bash" Method="remove">
 <INLINE>
-removepkg &name;-&version;-noarch-1
-rm -rf /usr/local/emhttp/plugins/&name;
-rm -rf &packages;
-echo ""
-echo "-----------------------------------------------------------"
-echo " &name; has been removed."
-echo " Version: &version;"
-echo "-----------------------------------------------------------"
-echo ""
+<![CDATA[
+removepkg unraid-labelman
+
+rm -rf /usr/local/emhttp/plugins/labelman
+rm -rf /boot/config/plugins/labelman
+]]>
 </INLINE>
 </FILE>
 
