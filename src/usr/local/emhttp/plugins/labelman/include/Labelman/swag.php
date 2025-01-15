@@ -29,9 +29,6 @@ class swag implements Service
     public string $swag_url = "";
     public string $swag_auth = "";
 
-    /**
-     * @param array<string,string> $labels
-     */
     public function __construct(Container $container)
 
     {
