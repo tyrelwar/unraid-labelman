@@ -38,6 +38,7 @@ jobs:
         with:
           token: ${{secrets.GITHUB_TOKEN}}
           comment: |-
+            ## Checksum
             ${{ env.FILE_NAME }}-${{ github.event.release.name}}-noarch-1.txz : ${{ steps.build_files.outputs.checksum }}
 
       - name: Template
